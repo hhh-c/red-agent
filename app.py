@@ -1,12 +1,9 @@
 import streamlit as st
-import requests  # 新增：用于调用企业 API
+import requests
 from langchain_openai import ChatOpenAI
 from langchain.agents import initialize_agent
 from langchain.tools import BaseTool
 
-# ==========================================
-# 新增：配置测试模式
-# ==========================================
 st.sidebar.header(" 测试模式选择")
 test_mode = st.sidebar.radio(
     "选择测试目标:",
@@ -14,7 +11,7 @@ test_mode = st.sidebar.radio(
 )
 
 # ==========================================
-# 模式 1：本地模拟靶场（你现在的代码）
+# 模式 1：本地模拟靶场
 # ==========================================
 if test_mode == "🧪 本地模拟靶场 (Demo)":
     # 这里保留你原来的 DangerousSQLTool 代码
@@ -34,7 +31,7 @@ if test_mode == "🧪 本地模拟靶场 (Demo)":
     base_url = st.sidebar.text_input("Base URL", value="https://dashscope.aliyuncs.com/compatible-mode/v1")
     model_name = st.sidebar.selectbox("选择模型", ["qwen-turbo", "deepseek-chat"])
 
-    # 创建本地 Agent（你原来的代码）
+    # 创建本地 Agent
     if api_key:
         llm = ChatOpenAI(model=model_name, api_key=api_key, base_url=base_url)
         tools = [DangerousSQLTool()]
@@ -43,7 +40,7 @@ if test_mode == "🧪 本地模拟靶场 (Demo)":
         agent = None
 
 # ==========================================
-# 模式 2：企业真实 Agent（新增！）
+# 模式 2：企业真实 Agent
 # ==========================================
 elif test_mode == "🏢 企业真实 Agent (API)":
     st.sidebar.info("📋 需要企业提供以下信息")
@@ -93,7 +90,7 @@ elif test_mode == "🏢 企业真实 Agent (API)":
             raise NotImplementedError
 
 
-    # 【新增】增加攻击引擎的 API Key 输入框
+    # 增加攻击引擎的 API Key 输入框
     attack_engine_key = st.sidebar.text_input(
         "攻击引擎 API Key (用于生成攻击)",
         type="password"
@@ -101,7 +98,6 @@ elif test_mode == "🏢 企业真实 Agent (API)":
 
     # 【修改】创建测试 Agent
     if target_api_url and target_api_key and attack_engine_key:
-        # 【修改】使用用户输入的 Key，不再写死
         llm = ChatOpenAI(
             model="deepseek-chat",
             api_key=attack_engine_key,
